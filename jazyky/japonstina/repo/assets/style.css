@@ -1,0 +1,82 @@
+/* Společný styl lekcí a referencí japonštiny. */
+:root {
+  --bg: #fbfaf7; --fg: #1d1d1b; --muted: #6b6a65; --line: #e4e1da;
+  --accent: #b5373a; --accent-soft: #f6e7e5; --ok: #2f7a4a; --bad: #b5373a;
+  --card: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614; --fg: #ecebe6; --muted: #9a9892; --line: #2e2d2a;
+    --accent: #e88b86; --accent-soft: #3a2422; --ok: #7fcf9b; --bad: #e88b86;
+    --card: #1f1f1c;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 18px/1.6 Georgia, "Iowan Old Style", serif;
+}
+main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
+h1 { font-weight: normal; font-size: 2rem; line-height: 1.2; margin: 0 0 4px; }
+h2 { font-weight: normal; font-size: 1.35rem; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-top: 40px; }
+.kicker { color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; }
+.lead { font-size: 1.1rem; color: var(--muted); }
+a { color: var(--accent); }
+.jp, .kana { font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif; }
+.kana { font-size: 1.4em; }
+.aside {
+  border-left: 3px solid var(--accent); background: var(--accent-soft);
+  padding: 10px 14px; margin: 20px 0; border-radius: 0 6px 6px 0; font-size: .95rem;
+}
+.aside p { margin: 4px 0; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { color: var(--muted); font-weight: normal; font-size: .85rem; }
+.pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+.pair { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--card); }
+.pair .kana { font-size: 1.8rem; }
+.pair small { display: block; color: var(--muted); }
+ol.steps li { margin-bottom: 6px; }
+footer { margin-top: 48px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 12px; }
+button {
+  font: inherit; font-size: .95rem; padding: 8px 14px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:disabled { opacity: .5; cursor: default; }
+input[type="text"] {
+  font: inherit; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--card); color: var(--fg); width: 10em;
+}
+.ok { color: var(--ok); } .bad { color: var(--bad); } .muted { color: var(--muted); }
+
+/* Kana dril */
+.drill { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
+.drill .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.drill .card { font-size: 4.5rem; text-align: center; line-height: 1.3; min-height: 1.3em; }
+.drill .answer { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.drill .feedback { text-align: center; min-height: 1.6em; margin-top: 8px; }
+.drill .progress { text-align: center; color: var(--muted); font-size: .85rem; }
+.drill .misses .kana { margin-right: .4em; }
+
+/* Kvíz */
+.quiz-q { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--card); margin: 14px 0; }
+.quiz-q p { margin: 0 0 8px; }
+.quiz-q .opts { display: grid; gap: 6px; }
+.quiz-q button { text-align: left; }
+.quiz-q button.right { border-color: var(--ok); color: var(--ok); }
+.quiz-q button.wrong { border-color: var(--bad); color: var(--bad); }
+.quiz-q .why { margin-top: 8px; font-size: .92rem; color: var(--muted); }
+
+/* Reference: tabulka kany */
+.kana-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 10px 0 24px; }
+.kana-grid div { border: 1px solid var(--line); border-radius: 6px; text-align: center; padding: 4px 0; background: var(--card); }
+.kana-grid .kana { display: block; font-size: 1.6rem; line-height: 1.2; }
+.kana-grid small { color: var(--muted); font-size: .8rem; }
+.kana-grid .blank { border: none; background: none; }
+
+@media print {
+  body { background: #fff; color: #000; font-size: 12pt; }
+  .drill, .quiz, button { display: none; }
+  a { color: #000; }
+}
