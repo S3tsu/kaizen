@@ -1,0 +1,9 @@
+# Soukromé: surové materiály a pravidla pro Clauda
+podklady/
+CLAUDE.md
+.claude/
+NOTES.md
+
+# Výstup buildu
+_site/
+__pycache__/
