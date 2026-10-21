@@ -80,3 +80,23 @@ input[type="text"] {
   .drill, .quiz, button { display: none; }
   a { color: #000; }
 }
+
+/* Tabulka hiragana + katakana v jednom políčku */
+.kana-grid.duo .kana { font-size: 1.4rem; }
+.kana-grid.duo .kata { margin-left: .35em; color: var(--accent); }
+
+/* Vybavovací karty */
+.reveal { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
+.reveal .progress { color: var(--muted); font-size: .85rem; }
+.reveal .prompt { font-size: 1.2rem; margin: 6px 0 12px; }
+.reveal .solution { font-size: 1.35rem; margin-bottom: 12px; }
+.reveal .solution small { display: block; font-size: .9rem; margin-top: 4px; }
+.reveal .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Dialog a slovíčka */
+.dialog { margin: 12px 0; }
+.dialog p { margin: 4px 0; }
+.dialog .who { color: var(--muted); display: inline-block; min-width: 4.5em; }
+.dialog .cz { font-family: Georgia, "Iowan Old Style", serif; display: block; color: var(--muted); font-size: .9rem; margin-left: 4.5em; }
+.pattern { font-size: 1.3rem; text-align: center; padding: 10px; border: 1px dashed var(--line); border-radius: 8px; margin: 12px 0; }
+@media print { .reveal { display: none; } }

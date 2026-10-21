@@ -26,7 +26,7 @@ window.KANA = {
       ["きゃ","kya","kja"],["きゅ","kyu","kju"],["きょ","kyo","kjo"],
       ["しゃ","sha","ša","sya"],["しゅ","shu","šu","syu"],["しょ","sho","šo","syo"],
       ["ちゃ","cha","ča","tya"],["ちゅ","chu","ču","tyu"],["ちょ","cho","čo","tyo"],
-      ["にゃ","nya","ňa","nja"],["にゅ","nyu","ňu","nju"],["にょ","nyo","ňo","njo"],
+      ["にゃ","nya","nja","ňa"],["にゅ","nyu","nju","ňu"],["にょ","nyo","njo","ňo"],
       ["ひゃ","hya","hja"],["ひゅ","hyu","hju"],["ひょ","hyo","hjo"],
       ["みゃ","mya","mja"],["みゅ","myu","mju"],["みょ","myo","mjo"],
       ["りゃ","rya","rja"],["りゅ","ryu","rju"],["りょ","ryo","rjo"],
@@ -37,3 +37,23 @@ window.KANA = {
     ]
   }
 };
+
+// Katakana má stejné čtení jako hiragana, znaky leží v Unicode o 0x60 dál.
+(function () {
+  function toKata(s) {
+    return s.replace(/[ぁ-ゖ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) + 0x60); });
+  }
+  const kata = {};
+  Object.keys(window.KANA.hiragana).forEach(function (set) {
+    kata[set] = window.KANA.hiragana[set].map(function (row) { return [toKata(row[0])].concat(row.slice(1)); });
+  });
+  // Spojení pro cizí slova, která v hiraganě nejsou.
+  kata.cizi = [
+    ["ファ","fa","fa"],["フィ","fi","fi"],["フェ","fe","fe"],["フォ","fo","fo"],
+    ["ティ","ti","ti"],["ディ","di","di"],["トゥ","tu","tu"],["ドゥ","du","du"],
+    ["ウィ","wi","wi","ui"],["ウェ","we","we","ue"],["ウォ","wo","wo","uo"],
+    ["シェ","she","še"],["ジェ","je","dže"],["チェ","che","če"],["ツァ","tsa","ca"],
+    ["ヴ","vu","vu"]
+  ];
+  window.KANA.katakana = kata;
+})();

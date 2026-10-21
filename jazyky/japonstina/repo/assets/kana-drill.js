@@ -27,7 +27,7 @@
     const allSets = window.KANA[script];
     const sets = (root.dataset.sets || Object.keys(allSets).join(",")).split(",");
     const storeKey = "kaizen-ja-misses-" + script;
-    const names = { zakladni: "Základní", dakuten: "S čárkami a kroužkem", yoon: "Spojení (きゃ…)" };
+    const names = { zakladni: "Základní", dakuten: "S čárkami a kroužkem", yoon: script === "katakana" ? "Spojení (キャ…)" : "Spojení (きゃ…)", cizi: "Cizí slova (ファ…)" };
 
     root.innerHTML =
       '<div class="controls"></div>' +
