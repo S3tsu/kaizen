@@ -3,7 +3,7 @@
 
 Ověří, že existuje index a verze, že každá HTML stránka jde přečíst
 a má <title>, a že všechny relativní odkazy (href/src) vedou na
-existující soubory. Při chybě skončí s nenulovým kódem.
+existující soubory, a že stránky neobsahují osobní údaje. Při chybě skončí s nenulovým kódem.
 """
 import re
 import sys
@@ -12,6 +12,11 @@ from urllib.parse import unquote, urlparse
 
 SITE = Path(__file__).resolve().parent.parent / "_site"
 LINK = re.compile(r"""(?:href|src)\s*=\s*["']([^"']+)["']""", re.I)
+# Web je veřejný: lokální cesty, e-maily a soukromé soubory /teach v něm nemají co dělat.
+PRIVATE = re.compile(
+    r"/mnt/md0\S*|/home/\S+|[\w.+-]+@[\w-]+\.[\w.]+|MISSION\.md|NOTES\.md|learning-records/",
+    re.I,
+)
 
 
 def main():
@@ -30,6 +35,8 @@ def main():
             continue
         if not re.search(r"<title>.+?</title>", text, re.S | re.I):
             errors.append(f"{rel}: chybí <title>")
+        for leak in PRIVATE.findall(text):
+            errors.append(f"{rel}: možný osobní údaj „{leak}“")
         for target in LINK.findall(text):
             url = urlparse(target)
             if url.scheme or url.netloc or target.startswith(("#", "mailto:", "data:")):

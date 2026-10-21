@@ -2,7 +2,14 @@
 podklady/
 CLAUDE.md
 .claude/
-NOTES.md
+
+# Soukromé stavové soubory /teach (cíle, co umím, poznámky, zdroje).
+# Z workspace se verzují jen veřejné výstupy: lessons, reference, assets.
+*/*/repo/*
+!*/*/repo/.gitkeep
+!*/*/repo/lessons/
+!*/*/repo/reference/
+!*/*/repo/assets/
 
 # Výstup buildu
 _site/
