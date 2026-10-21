@@ -43,8 +43,8 @@
       $(".solution").hidden = false;
       $(".show").hidden = true; $(".got").hidden = false; $(".miss").hidden = false;
     };
-    $(".got").onclick = function () { got++; i++; render(); };
-    $(".miss").onclick = function () { missed.push(cards[i]); i++; render(); };
+    $(".got").onclick = function () { got++; i++; if (window.Zivost) window.Zivost.answer(true); render(); };
+    $(".miss").onclick = function () { missed.push(cards[i]); i++; if (window.Zivost) window.Zivost.answer(false); render(); };
     render();
   });
 })();

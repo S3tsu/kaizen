@@ -96,6 +96,7 @@
       const val = norm(input.value);
       if (!val) return;
       const ok = current.slice(1).some(function (a) { return norm(a) === val; });
+      if (window.Zivost) window.Zivost.answer(ok);
       const m = load(storeKey);
       if (ok) {
         feedback.innerHTML = '<span class="ok">Správně: ' + label(current) + "</span>";

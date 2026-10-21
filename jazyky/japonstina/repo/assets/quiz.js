@@ -39,6 +39,7 @@
           }
           why.innerHTML = (c.correct ? '<span class="ok">Správně.</span> ' : '<span class="bad">Vedle.</span> ') + (item.why || "");
           answered++; if (c.correct) right++;
+          if (window.Zivost) window.Zivost.answer(c.correct);
           score.textContent = "Skóre: " + right + " / " + answered + (answered === questions.length ? " (hotovo)" : "");
         };
         opts.appendChild(b);
