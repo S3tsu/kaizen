@@ -1,4 +1,4 @@
-# Learning
+# Kaizen
 
 Materiály pro denní učení (jazyky, IT), tvořené skillem `/teach` v Claude Code.
 

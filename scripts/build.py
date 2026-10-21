@@ -72,7 +72,7 @@ def render_index(version: str, areas) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Learning</title>
+<title>Kaizen</title>
 <style>
 :root {{ --bg:#fbfaf7; --fg:#1d1d1b; --muted:#6b6a65; --line:#e4e1da; --accent:#2f5d8a; }}
 @media (prefers-color-scheme: dark) {{ :root {{ --bg:#161614; --fg:#ecebe6; --muted:#9a9892; --line:#2e2d2a; --accent:#8ab4e0; }} }}
@@ -89,7 +89,7 @@ ul {{ margin:0; padding-left:18px; }} a {{ color:var(--accent); }}
 </head>
 <body>
 <main>
-<h1>Learning</h1>
+<h1>Kaizen</h1>
 <p class="empty">Denní učení: jazyky a IT.</p>
 {''.join(sections)}
 <footer>Verze {html.escape(version)}</footer>
