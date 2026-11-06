@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 · Diagnostika: kde jsou mezery</title>
+<link rel="stylesheet" href="../../../assets/base.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+<p class="kicker">Networking · lekce 1 · asi 15 minut</p>
+<h1>Diagnostika: kde jsou mezery</h1>
+<p class="lead">Na konci budeš mít mapu osmi oblastí a podle ní se určí, co má smysl učit dál.</p>
+
+<p>Tenhle kurz nezačíná od nuly. Ze sítí člověk v praxi umí hodně, ale nerovnoměrně: co dělá každý den, má v ruce, a co jednou za dva roky, musí hledat. Šestnáct otázek po dvou z každé oblasti ukáže, kde to je.</p>
+
+<div class="zv-fact"></div>
+
+<div class="aside">
+<p><strong>Jak odpovídat:</strong> bez hledání a bez konzole. Když si nejsi jistý, dej <strong>Nevím</strong>. Tip, který vyjde, by zakryl přesně to, co chceme najít. Pod každou odpovědí je vysvětlení s odkazem na zdroj, kde to jde, primární.</p>
+</div>
+
+<h2>Otázky</h2>
+<script type="application/json" class="diag-data">
+[
+ {"area": "IPv4 a subnetting", "q": "Co platí pro síť <code>198.51.100.64/27</code>?", "a": ["30 hostů, broadcast 198.51.100.95", "30 hostů, broadcast 198.51.100.96", "62 hostů, broadcast 198.51.100.127"], "why": "/27 je blok 32 adres, tedy .64 až .95. Bez síťové a broadcastové adresy zbývá 30 hostů. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc1122.html\">RFC 1122</a>, část 3.2.1.3."},
+ {"area": "IPv4 a subnetting", "q": "Proč může mít bod-bod linka masku <code>/31</code>?", "a": ["Síťová a broadcastová se tu nevyhrazují", "Router si chybějící adresy doplní přes ARP", "Linka pak běží jen na link-local adresách"], "why": "Na bod-bod lince není potřeba ani síťová, ani broadcastová adresa, takže obě adresy /31 slouží koncům linky. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc3021.html\">RFC 3021</a>."},
+ {"area": "IPv6", "q": "Kam posílá IPv6 host Neighbor Solicitation, když hledá linkovou adresu souseda?", "a": ["Na solicited-node multicast cílové adresy", "Na all-nodes multicast <code>ff02::1</code> linky", "Na broadcast <code>ff02::ffff</code> dané linky"], "why": "IPv6 broadcast nemá. Solicited-node adresa se skládá z <code>ff02::1:ff00:0/104</code> a posledních 24 bitů cílové adresy, takže zprávu zpracuje jen pár stanic. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc4861.html\">RFC 4861</a> a <a href=\"https://www.rfc-editor.org/rfc/rfc4291.html\">RFC 4291</a>."},
+ {"area": "IPv6", "q": "Co se stane, když firewall hosta zahodí veškeré příchozí ICMPv6?", "a": ["Rozbije se NDP i zjišťování MTU cesty", "Přestane odpovídat jen na příkaz ping", "Přestanou fungovat jen globální adresy"], "why": "NDP běží přímo nad ICMPv6. Packet Too Big je jediná zpráva, kterou síť odesílateli o menší MTU sama oznámí, a routery v IPv6 nefragmentují (<a href=\"https://www.rfc-editor.org/rfc/rfc8200.html\">RFC 8200</a>, <a href=\"https://www.rfc-editor.org/rfc/rfc8201.html\">RFC 8201</a>). Bez ní MTU zjistí jen sondování podle <a href=\"https://www.rfc-editor.org/rfc/rfc4821.html\">RFC 4821</a>, které nemusí každý používat. Co filtrovat a co nikdy popisuje <a href=\"https://www.rfc-editor.org/rfc/rfc4890.html\">RFC 4890</a>."},
+ {"area": "Přepínání a VLAN", "q": "Jak obvykle vypadají na 802.1Q trunku rámce z native VLAN?", "a": ["Odcházejí bez tagu VLAN", "Odcházejí s tagem VLAN 0", "Odcházejí s tagem VLAN 1"], "why": "Native VLAN je pojem výrobců: její rámce jdou po trunku netagované a přijaté netagované rámce do ní spadnou. Nesoulad na dvou koncích proto spojí dvě různé VLAN, a pokud na to neupozorní třeba CDP, snadno se to přehlédne. Stručně o tom píše <a href=\"https://en.wikipedia.org/wiki/IEEE_802.1Q\">Wikipedie: IEEE 802.1Q</a>, detaily jsou v dokumentaci výrobce."},
+ {"area": "Přepínání a VLAN", "q": "Co rozhoduje ve Spanning Tree o volbě root bridge?", "a": ["Nejnižší bridge ID, tedy priorita a MAC", "Nejvyšší bridge ID, tedy priorita a MAC", "Nejnižší součet cen portů k ostatním"], "why": "Bridge ID je priorita následovaná MAC adresou a vyhrává nejnižší. Proto se priorita nastavuje ručně, jinak o rootu rozhodne nejnižší MAC, a to bývá náhodný, často starý přepínač. Viz <a href=\"https://en.wikipedia.org/wiki/Spanning_Tree_Protocol\">Spanning Tree Protocol</a>."},
+ {"area": "Směrování", "q": "Router má <code>198.51.100.0/24</code> z OSPF (distance 110) a <code>198.51.100.128/25</code> z iBGP (distance 200). Kudy půjde paket na <code>198.51.100.200</code>?", "a": ["Přes /25, rozhoduje nejdelší prefix", "Přes /24, rozhoduje nižší distance", "Oběma cestami, vznikne z toho ECMP"], "why": "Distance je pojem výrobců a vybírá jen mezi cestami ke <em>stejnému</em> prefixu. Do forwardovací tabulky se dostanou oba a při předávání vyhrává nejdelší shoda. O nejdelší shodě viz <a href=\"https://www.rfc-editor.org/rfc/rfc4632.html\">RFC 4632</a>."},
+ {"area": "Směrování", "q": "Čím v BGP nejběžněji určíš, kudy provoz <em>odchází</em> z tvého AS?", "a": ["LOCAL_PREF, vyšší hodnota vyhrává", "AS_PATH, delší cesta vždy vyhrává", "MED, vyšší hodnota vždy vyhrává"], "why": "LOCAL_PREF se šíří uvnitř AS a v rozhodování je dřív než délka AS_PATH. Přednost má kratší AS_PATH a nižší MED. MED, který posíláš sousedovi, ovlivňuje, kudy k tobě provoz přijde; přijatý MED je až pozdější kritérium a porovnává se jen mezi cestami od téhož sousedního AS. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc4271.html\">RFC 4271</a>."},
+ {"area": "TCP a MTU", "q": "Spojení TCP se naváže, malé odpovědi projdou, velké přenosy visí. Co je nejpravděpodobnější?", "a": ["Někdo zahazuje ICMP a selhává PMTUD", "Serveru se zaplnila fronta na SYN", "Klient v handshaku oznámil malé MSS"], "why": "Handshake je malý, takže projde. Velké segmenty s DF narazí na menší MTU a chybová zpráva ICMP se k odesílateli nedostane. Tomu se říká PMTUD black hole, viz <a href=\"https://www.rfc-editor.org/rfc/rfc2923.html\">RFC 2923</a>."},
+ {"area": "TCP a MTU", "q": "Která strana zůstává ve stavu <code>TIME-WAIT</code>?", "a": ["Ta, která spojení zavřela první", "Ta, která spojení zavřela druhá", "Vždy server, bez ohledu na pořadí"], "why": "Do TIME-WAIT jde strana, která zahájila zavírání, při současném zavření obě. Proto se u proxy a klientů s mnoha krátkými spojeními hromadí sockety v TIME-WAIT. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc9293.html\">RFC 9293</a>."},
+ {"area": "DNS", "q": "Proč nesmí být na vrcholu zóny (<code>example.com.</code>) záznam CNAME?", "a": ["CNAME nemůže být vedle SOA a NS", "CNAME může cílit jen na subdoménu", "Resolver CNAME na vrcholu ignoruje"], "why": "Jméno s CNAME nesmí mít jiná data kromě DNSSEC záznamů, a vrchol zóny vždy má SOA a NS. Funkce typu ALIAS nebo CNAME flattening to obcházejí na straně autoritativního serveru. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc1034.html\">RFC 1034</a> a <a href=\"https://www.rfc-editor.org/rfc/rfc2181.html\">RFC 2181</a>."},
+ {"area": "DNS", "q": "Jméno existuje, ale nemá záznam požadovaného typu. Jak vypadá odpověď?", "a": ["NOERROR a prázdná sekce answer", "NXDOMAIN a prázdná sekce answer", "SERVFAIL a prázdná sekce answer"], "why": "Tomu se říká NODATA. Answer může obsahovat řetězec CNAME, ale ne požadovaný typ; v authority bývá SOA. NXDOMAIN znamená, že neexistuje samo jméno, a platí pro všechny typy. Rozdíl je důležitý i pro negativní cache. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc2308.html\">RFC 2308</a>."},
+ {"area": "NAT a firewall", "q": "Port forward na server funguje z internetu, ale ze stejné LAN přes veřejnou adresu ne. Proč?", "a": ["Chybí hairpin NAT, odpověď obchází router", "DNAT funguje jen pro provoz na portech UDP", "Veřejnou adresu z LAN nelze vůbec směrovat"], "why": "Typicky server vidí zdroj z vlastní LAN, odpoví přímo a klient zahodí odpověď z neočekávané adresy. Router musí provoz vrátit a přeložit i zdroj. Druhá častá příčina je pravidlo DNAT vázané jen na WAN rozhraní. Pojem hairpinning zavádějí <a href=\"https://www.rfc-editor.org/rfc/rfc4787.html\">RFC 4787</a> a <a href=\"https://www.rfc-editor.org/rfc/rfc5382.html\">RFC 5382</a>."},
+ {"area": "NAT a firewall", "q": "Router má na WAN adresu z <code>100.64.0.0/10</code>. Co z toho plyne?", "a": ["Nejspíš jsi za CGNAT, port forward nepomůže", "Máš veřejnou adresu, jen ze staršího bloku", "Je to link-local adresa, chybí DHCP server"], "why": "Tento rozsah je vyhrazený pro poskytovatele a carrier-grade NAT. Příchozí spojení pak končí u poskytovatele, ne u tebe. Link-local je <code>169.254.0.0/16</code>. Viz <a href=\"https://www.rfc-editor.org/rfc/rfc6598.html\">RFC 6598</a>."},
+ {"area": "Linuxové nástroje", "q": "Který filtr tcpdump zachytí jen první paket handshaku, tedy SYN bez SYN-ACK?", "a": ["<code>tcp[tcpflags] == tcp-syn</code>", "<code>tcp[tcpflags] &amp; tcp-syn != 0</code>", "<code>tcp[tcpflags] == tcp-ack</code>"], "why": "Maska <code>&amp; tcp-syn != 0</code> se trefí i do SYN-ACK. Rovnost vyžaduje, aby byl nastavený jen SYN. Pozor: <code>==</code> mine SYN s ECN (ECE a CWR) a <code>tcp[...]</code> funguje jen pro IPv4. Odolnější je <code>tcp[tcpflags] &amp; (tcp-syn|tcp-ack) == tcp-syn</code>. Viz <a href=\"https://www.tcpdump.org/manpages/pcap-filter.7.html\">pcap-filter(7)</a>."},
+ {"area": "Linuxové nástroje", "q": "Který příkaz ukáže, jakou cestu by kernel skutečně vybral pro danou adresu?", "a": ["<code>ip route get 198.51.100.7</code>", "<code>ip addr show 198.51.100.7</code>", "<code>ip link show 198.51.100.7</code>"], "why": "<code>ip route get</code> se ptá kernelu na výsledek rozhodnutí a ve výpisu ukáže i zdrojovou adresu a rozhraní. Viz <a href=\"https://man7.org/linux/man-pages/man8/ip-route.8.html\">ip-route(8)</a>."}
+]
+</script>
+
+<h2>Co s výsledkem</h2>
+<ol class="steps">
+<li>Výsledek zkopíruj a pošli svému učiteli. Podle něj se určí další lekce.</li>
+<li>Oblasti s plným skóre nejsou důkaz, že je umíš celé. Dvě otázky jsou jen sonda, takže se k nim vrátíme hlouběji.</li>
+<li>Rozcvička na zítřek: jedno kolo <a href="../reference/subnetting.html">drilu subnettingu</a>.</li>
+</ol>
+
+<div class="aside">
+<p><strong>Hlavní zdroj:</strong> u protokolů příslušné RFC nebo standard IEEE. Začni tím, které se týká tvé nejslabší oblasti, odkazy jsou u jednotlivých otázek.</p>
+<p><strong>Něco nejasné?</strong> Zeptej se svého učitele, klidně i na to, proč je nějaká odpověď špatně. Některé otázky mají v praxi výjimky a o ty stojí za to se pohádat.</p>
+</div>
+
+<footer>Reference: <a href="../reference/subnetting.html">Subnetting: dril a tabulka</a></footer>
+</main>
+<script src="../assets/zivost-config.js"></script>
+<script src="../../../assets/zivost.js"></script>
+<script src="../assets/diagnostika.js"></script>
+</body>
+</html>

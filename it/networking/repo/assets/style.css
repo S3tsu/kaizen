@@ -1,0 +1,34 @@
+/* Doplněk ke společnému stylu: příkazy, výpisy, dril a diagnostika sítí. */
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88em; }
+code { background: var(--accent-soft); padding: 1px 4px; border-radius: 4px; overflow-wrap: anywhere; }
+pre { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+.subnet-dril { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
+.subnet-dril .progress { color: var(--muted); font-size: .85rem; text-align: center; }
+.subnet-dril .card { font-size: 1.25rem; text-align: center; margin: 12px 0; }
+.subnet-dril .answer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.subnet-dril input[type="text"] { width: 13em; max-width: 100%; }
+.subnet-dril .feedback { text-align: center; margin-top: 10px; min-height: 1.6em; font-size: .95rem; }
+.diag-result { margin: 16px 0; }
+.diag-result h3 { font-weight: normal; margin: 0 0 4px; }
+@media print { .subnet-dril { display: none; } }
+
+/* Téma a maskot Hop */
+:root { --accent: #1f7a6d; --accent-soft: #e4f2ef; --hp-fur: #d9d4c7; --hp-dark: #8d8678; --hp-ink: #2a2a26; --hp-pink: #e9a6a0; --hp-cable: #1f7a6d; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --accent: #6fcdbd; --accent-soft: #1b2e2b; --hp-fur: #cfcabc; --hp-dark: #8a8375; --hp-ink: #161614; --hp-cable: #6fcdbd; }
+}
+button.primary { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.primary { color: #10201d; } }
+.hop .hp-fur { fill: var(--hp-fur); stroke: var(--hp-ink); stroke-width: 3; }
+.hop .hp-in { fill: var(--hp-pink); }
+.hop .hl { fill: none; stroke: var(--hp-ink); stroke-linecap: round; stroke-linejoin: round; }
+.hop .hp-cable { fill: none; stroke: var(--hp-cable); stroke-width: 5; stroke-linecap: round; }
+@media (prefers-reduced-motion: no-preference) {
+  .hop .hp-blink { animation: hp-blink 5s infinite; transform-origin: 100px 90px; }
+  .hop .hp-cheer { animation: hp-bob .5s ease-in-out infinite alternate; }
+  .hop .hp-ear { animation: hp-ear 3.5s ease-in-out infinite alternate; transform-origin: 122px 62px; }
+}
+@keyframes hp-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+@keyframes hp-bob { to { transform: translateY(-6px); } }
+@keyframes hp-ear { from { transform: rotate(-3deg); } to { transform: rotate(5deg); } }

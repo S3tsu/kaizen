@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subnetting: dril a tabulka</title>
+<link rel="stylesheet" href="../../../assets/base.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+<p class="kicker">Reference · networking</p>
+<h1>Subnetting: dril a tabulka</h1>
+<p class="lead">Kolo trvá pár minut. Typy úloh, které ti nejdou, se vracejí častěji, a každá odpověď se počítá do denního cíle.</p>
+<div class="zv-goals"></div>
+
+<h2>Dril</h2>
+<div class="subnet-dril"></div>
+
+<h2>Postup z hlavy</h2>
+<ol class="steps">
+<li>Počet adres: <code>2^(32 − prefix)</code>. Blok v „zajímavém“ oktetu (kde maska není 255 ani 0, případně poslední s nenulovou maskou) je 256 minus hodnota masky v tomto oktetu.</li>
+<li>Síťová adresa: v zajímavém oktetu najdi nejbližší násobek bloku, který není větší, další oktety vynuluj.</li>
+<li>Broadcast: v zajímavém oktetu síť plus blok minus jedna, další oktety 255.</li>
+<li>Wildcard: každý oktet masky odečti od 255.</li>
+</ol>
+
+<h2>Tabulka prefixů</h2>
+<table>
+<tr><th>Prefix</th><th>Maska</th><th>Adres</th><th>Hostů</th></tr>
+<tr><td>/16</td><td><code>255.255.0.0</code></td><td>65 536</td><td>65 534</td></tr>
+<tr><td>/17</td><td><code>255.255.128.0</code></td><td>32 768</td><td>32 766</td></tr>
+<tr><td>/18</td><td><code>255.255.192.0</code></td><td>16 384</td><td>16 382</td></tr>
+<tr><td>/19</td><td><code>255.255.224.0</code></td><td>8 192</td><td>8 190</td></tr>
+<tr><td>/20</td><td><code>255.255.240.0</code></td><td>4 096</td><td>4 094</td></tr>
+<tr><td>/21</td><td><code>255.255.248.0</code></td><td>2 048</td><td>2 046</td></tr>
+<tr><td>/22</td><td><code>255.255.252.0</code></td><td>1 024</td><td>1 022</td></tr>
+<tr><td>/23</td><td><code>255.255.254.0</code></td><td>512</td><td>510</td></tr>
+<tr><td>/24</td><td><code>255.255.255.0</code></td><td>256</td><td>254</td></tr>
+<tr><td>/25</td><td><code>255.255.255.128</code></td><td>128</td><td>126</td></tr>
+<tr><td>/26</td><td><code>255.255.255.192</code></td><td>64</td><td>62</td></tr>
+<tr><td>/27</td><td><code>255.255.255.224</code></td><td>32</td><td>30</td></tr>
+<tr><td>/28</td><td><code>255.255.255.240</code></td><td>16</td><td>14</td></tr>
+<tr><td>/29</td><td><code>255.255.255.248</code></td><td>8</td><td>6</td></tr>
+<tr><td>/30</td><td><code>255.255.255.252</code></td><td>4</td><td>2</td></tr>
+<tr><td>/31</td><td><code>255.255.255.254</code></td><td>2</td><td>2 (bod-bod, RFC 3021)</td></tr>
+<tr><td>/32</td><td><code>255.255.255.255</code></td><td>1</td><td>1 (jedna adresa)</td></tr>
+</table>
+
+<h2>Rozsahy, které stojí za to znát</h2>
+<table>
+<tr><th>Rozsah</th><th>Účel</th><th>Zdroj</th></tr>
+<tr><td><code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code></td><td>Privátní adresy</td><td><a href="https://www.rfc-editor.org/rfc/rfc1918.html">RFC 1918</a></td></tr>
+<tr><td><code>100.64.0.0/10</code></td><td>Sdílený prostor pro CGNAT</td><td><a href="https://www.rfc-editor.org/rfc/rfc6598.html">RFC 6598</a></td></tr>
+<tr><td><code>169.254.0.0/16</code></td><td>Link-local</td><td><a href="https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml">IANA</a></td></tr>
+<tr><td><code>192.0.2.0/24</code>, <code>198.51.100.0/24</code>, <code>203.0.113.0/24</code></td><td>Dokumentace a příklady</td><td><a href="https://www.rfc-editor.org/rfc/rfc5737.html">RFC 5737</a></td></tr>
+</table>
+
+<footer>Lekce: <a href="../lessons/0001-diagnostika.html">1 · Diagnostika</a></footer>
+</main>
+<script src="../assets/zivost-config.js"></script>
+<script src="../../../assets/zivost.js"></script>
+<script src="../assets/subnet-dril.js"></script>
+</body>
+</html>
