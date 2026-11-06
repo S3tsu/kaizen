@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 · Bandit: SSH, shell a kde se smí cvičit</title>
+<link rel="stylesheet" href="../../../assets/base.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+<p class="kicker">Security · lekce 1 · 15–20 minut + volitelné rozšíření</p>
+<h1>Bandit: SSH, shell a kde se smí cvičit</h1>
+<p class="lead">Na konci budeš přihlášený do hry Bandit jako <code>bandit4</code> a budeš vědět, proč názvy souborů umí rozbít příkazy i skripty.</p>
+
+<p><a href="https://overthewire.org/wargames/bandit/">Bandit</a> je cvičná hra komunity OverTheWire, určená podle autorů úplným začátečníkům. Je to legální cíl a zároveň rychlá kontrola, jak jsi na tom se shellem. Pokud to znáš, projdi lekci rychle a zaměř se na kvíz.</p>
+
+<div class="zv-fact"></div>
+<div class="zv-goals"></div>
+
+<h2>1. Kde se smí cvičit</h2>
+<div class="legal">
+<p><strong>Pravidlo:</strong> zkoušej jen na vlastních strojích a na cílech, kde to provozovatel výslovně dovoluje.</p>
+</div>
+<ul>
+<li><a href="https://www.zakonyprolidi.cz/cs/2009-40#p230">§ 230 trestního zákoníku</a> trestá toho, kdo překoná bezpečnostní opatření a tím neoprávněně získá přístup k počítačovému systému. Postihuje i neoprávněné zásahy do systému a dat, u kterých žádné opatření překonat nemusíš. Není to právní rada, jen důvod, proč být opatrný.</li>
+<li>Přístup není povolení. Správcovský účet ti dovoluje spravovat, ne automaticky testovat útoky. V práci si nech rozsah testu potvrdit předem, nejlépe písemně, ať ho máš čím doložit.</li>
+<li><a href="https://overthewire.org/rules/">Pravidla OverTheWire</a> zakazují zveřejňovat přístupové údaje ke hrám a kazit hru ostatním. Hesla si proto ukládej jen k sobě a v téhle lekci je nenajdeš.</li>
+</ul>
+
+<h2>2. SSH: to podstatné</h2>
+<pre><code>ssh -p 2222 eva@server</code></pre>
+<ul>
+<li><code>-p</code> nastaví port. Výchozí je 22, Bandit běží na jiném. Malé a velké písmeno tu hrají roli: <code>-P</code> v <a href="https://man.openbsd.org/ssh">ssh</a> znamená něco jiného, a <code>scp</code> naopak port nastavuje právě přes <code>-P</code>.</li>
+<li><strong>Otisk klíče</strong> při prvním připojení posílá sám server, takže něco dokazuje, až když ho porovnáš s otiskem z důvěryhodného zdroje. Pokud připojení potvrdíš, klient si veřejný klíč serveru uloží do <code>~/.ssh/known_hosts</code> a příště ho porovná. Ověřuje se tím server, ne ty.</li>
+<li><strong>Varování o změněném klíči</strong> může znamenat třeba reinstalaci serveru, ale i útok typu člověk uprostřed. Ve výchozím nastavení se ssh <a href="https://man.openbsd.org/ssh_config#StrictHostKeyChecking">odmítne připojit</a>. Záznam nemaž, dokud důvod nezjistíš jinou cestou.</li>
+</ul>
+
+<h2>3. Čtyři pasti v názvech souborů</h2>
+<p>Shell text <a href="https://www.gnu.org/software/bash/manual/bash.html#Shell-Operation">nejdřív rozdělí na slova</a> a uvozovky odstraní. Program pak dostane jen výsledek. Odtud pochází většina překvapení.</p>
+<div class="trap"><h3><code>.env</code></h3><p><code>ls</code> ho nevypíše. Tečka je jen zvyk, ne ochrana. Řešení: <code>ls -a</code>.</p></div>
+<div class="trap"><h3><code>-plan.txt</code></h3><p>Program ho vezme jako přepínač. Uvozovky nepomůžou, shell je odstraní dřív. Řešení: <code>cat ./-plan.txt</code> nebo <code>cat -- -plan.txt</code>.</p></div>
+<div class="trap"><h3><code>-</code></h3><p>Samotná pomlčka u <a href="https://www.gnu.org/software/coreutils/manual/html_node/cat-invocation.html">cat</a> znamená standardní vstup, takže příkaz čeká. Ukončí ho Ctrl+D nebo Ctrl+C. <code>--</code> tu nepomůže, použij cestu začínající <code>./</code>.</p></div>
+<div class="trap"><h3><code>moje poznamky.txt</code></h3><p>Shell z něj udělá dvě slova. Řešení: <a href="https://www.gnu.org/software/bash/manual/bash.html#Quoting">uvozovky</a>, <code>\</code> nebo doplnění tabulátorem.</p></div>
+<p><code>--</code> je <a href="https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap12.html">domluvený konec přepínačů</a>: co následuje, program nebere jako přepínač. Proč na tom záleží v bezpečnosti? Název souboru je vstup, který může ovládat někdo jiný. Skript s <code>rm $f</code> rozbije <a href="https://www.gnu.org/software/bash/manual/bash.html#Word-Splitting">dělení na slova</a> kvůli mezeře v názvu a soubor <code>-rf</code> mu změní chování. Bezpečnější zápis je <code>rm -- "$f"</code>. Stejnému principu říkáme vkládání argumentů a potkáš ho znovu i u webu.</p>
+<p>Neznámý soubor nejdřív prozkoumej: <code>ls -la</code> ukáže oprávnění a velikost, <code>file</code> typ podle obsahu, ne podle přípony.</p>
+
+<h2>4. Kvíz</h2>
+<script type="application/json" class="quiz-data">
+[
+ {"id": "sec-l1-q-port", "q": "Server má SSH na portu 2222. Jak se připojíš?", "a": ["<code>ssh -p 2222 eva@server</code>", "<code>ssh -P 2222 eva@server</code>", "<code>ssh -l 2222 eva@server</code>"], "why": "Port nastavuje malé <code>-p</code>. <code>-l</code> je přihlašovací jméno a <code>-P</code> v ssh port nenastavuje."},
+ {"id": "sec-l1-q-otisk", "q": "Co ověřuješ otiskem klíče při prvním připojení?", "a": ["že mluvíš se správným serverem", "že máš správné heslo k účtu", "že je spojení šifrované a rychlé"], "why": "Otisk patří serveru. Tvoji totožnost ověřuje až heslo nebo tvůj klíč."},
+ {"id": "sec-l1-q-zmena", "q": "ssh hlásí, že se klíč známého serveru změnil. Co uděláš?", "a": ["zjistím důvod jinou cestou", "smažu záznam a připojím se", "zadám heslo a pokračuji"], "why": "Může jít třeba o reinstalaci, ale i o útok. Dokud to nevíš, záznam nemaž a nepřipojuj se."},
+ {"id": "sec-l1-q-pomlcka", "q": "Jak vypíšeš soubor <code>-plan.txt</code>?", "a": ["<code>cat ./-plan.txt</code>", "<code>cat \"-plan.txt\"</code>", "<code>cat \\-plan.txt</code>"], "why": "Uvozovky i zpětné lomítko shell odstraní, takže <code>cat</code> stejně dostane <code>-plan.txt</code>. S <code>./</code> název pomlčkou nezačíná."},
+ {"id": "sec-l1-q-mezera", "q": "Jak vypíšeš soubor <code>moje poznamky.txt</code>?", "a": ["<code>cat moje\\ poznamky.txt</code>", "<code>cat moje poznamky.txt</code>", "<code>cat \"moje\" poznamky.txt</code>"], "why": "Zpětné lomítko zruší význam mezery. Ve zbylých dvou zápisech <code>cat</code> dostane dva názvy."},
+ {"id": "sec-l1-q-tecka", "q": "Proč <code>ls</code> nevypíše soubor <code>.env</code>?", "a": ["název začíná tečkou, je to zvyk", "soubor smí číst jen správce systému", "soubor je na disku zašifrovaný"], "why": "Tečka soubor jen skryje z výpisu. Oprávnění nemění a nic nechrání."},
+ {"id": "sec-l1-q-povoleni", "q": "Máš na firemní síti správcovský účet a chceš zkusit útok. Co dál?", "a": ["nechám si předem potvrdit rozsah", "stačí mi správcovský účet na síti", "udělám to mimo pracovní dobu"], "why": "Správa není totéž co povolení k testování. Písemně je to nejlepší, protože rozsah pak máš čím doložit."},
+ {"id": "sec-l1-q-skript", "q": "Proč psát ve skriptu <code>rm -- \"$f\"</code> místo <code>rm $f</code>?", "a": ["mezera nerozdělí, pomlčka nezmate", "příkaz poběží s vyšším oprávněním roota", "skript poběží o poznání rychleji"], "why": "Uvozovky brání rozdělení na slova, <code>--</code> brání výkladu názvu jako přepínače."}
+]
+</script>
+
+<h2>5. Vybavování</h2>
+<p>Odpověz nahlas nebo na papír, teprve pak si odkryj řešení.</p>
+<script type="application/json" class="reveal-data">
+[
+ {"id": "sec-l1-c-ssh", "q": "Připoj se jako eva na server, port 2222.", "a": "<code>ssh -p 2222 eva@server</code>"},
+ {"id": "sec-l1-c-ls", "q": "Vypiš všechny soubory včetně skrytých a s podrobnostmi.", "a": "<code>ls -la</code>"},
+ {"id": "sec-l1-c-file", "q": "Zjisti typ souboru <code>data</code> podle obsahu.", "a": "<code>file data</code>"},
+ {"id": "sec-l1-c-pomlcka", "q": "Přečti soubor <code>-x</code>. Uveď dva zápisy.", "a": "<code>cat ./-x</code>, <code>cat -- -x</code>"},
+ {"id": "sec-l1-c-stdin", "q": "Proč příkaz <code>cat -</code> jen čeká?", "a": "Čte standardní vstup.", "note": "Ukončíš ho Ctrl+D nebo Ctrl+C."},
+ {"id": "sec-l1-c-known", "q": "Kam si ssh ukládá klíče známých serverů?", "a": "<code>~/.ssh/known_hosts</code>"},
+ {"id": "sec-l1-c-pravidlo", "q": "Kde smíš zkoušet útoky?", "a": "Na vlastních strojích a tam, kde to provozovatel výslovně dovoluje."}
+]
+</script>
+
+<h2>6. Úkol: dostaň se na <code>bandit4</code></h2>
+<ol class="steps">
+<li>Přečti si <a href="https://overthewire.org/rules/">pravidla</a> a založ si u sebe soubor na poznámky. Hesla se při další návštěvě hodí a mohou se změnit, takže si zapiš i postup.</li>
+<li>Přihlas se podle <a href="https://overthewire.org/wargames/bandit/bandit0.html">stránky úrovně 0</a>, kde je adresa, port i přihlašovací údaje.</li>
+<li>Pokračuj <a href="https://overthewire.org/wargames/bandit/bandit1.html">úrovní 1</a> a dál podle odkazů v menu, až se přihlásíš jako <code>bandit4</code>. Heslo z každé úrovně použiješ k novému SSH přihlášení.</li>
+</ol>
+<p>Nápovědy rozbal až po pokusu:</p>
+<details><summary>Soubor se jmenuje jen pomlčka</summary><p>Oddělovač <code>--</code> tu nestačí, protože samotná pomlčka i tak znamená standardní vstup. Zkus cestu.</p></details>
+<details><summary>V názvu jsou mezery a začíná pomlčkami</summary><p>Jsou to dvě pasti najednou, takže potřebuješ dvě opatření. Pomůže i doplnění tabulátorem, když napíšeš začátek cesty.</p></details>
+<details><summary>Adresář vypadá prázdný</summary><p>Který přepínač <code>ls</code> ukáže i skryté soubory?</p></details>
+
+<h2>7. Volitelné rozšíření: SSH ve vlastním labu</h2>
+<p class="muted">Na 30–45 minut, když máš čas navíc. Dělej to jen na vlastním stroji s Linuxem a OpenSSH.</p>
+<ol class="steps">
+<li><strong>Ověř otisk.</strong> Na serveru vypiš otisk jeho klíče: <code>ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code>. Na klientovi smaž starý záznam přes <code>ssh-keygen -R server</code>, připoj se a oba otisky porovnej. Teprve teď víš, co vlastně potvrzuješ.</li>
+<li><strong>Přihlas se klíčem.</strong> Na klientovi spusť <code>ssh-keygen -t ed25519</code> a nastav heslo ke klíči (passphrase). Veřejný klíč přenes přes <code>ssh-copy-id eva@server</code>. Soukromý klíč zůstává u tebe. Ověř, že <code>ssh eva@server</code> teď chce heslo ke klíči, ne k účtu.</li>
+<li><strong>Vypni přihlašování heslem.</strong> Nech si otevřenou jednu relaci pro případ chyby. Na začátek <code>/etc/ssh/sshd_config</code> dej <code>PasswordAuthentication no</code> a <code>KbdInteractiveAuthentication no</code>. Platí <a href="https://man.openbsd.org/sshd_config">první nalezená hodnota</a>, takže může vyhrát i soubor v <code>sshd_config.d</code> nebo řádek výš. Konfiguraci zkontroluj přes <code>sudo sshd -t</code>. Výslednou konfiguraci z disku ukáže <code>sudo sshd -T | grep -Ei '^(passwordauth|kbdinteractiveauth)'</code>, u obou má být <code>no</code>.</li>
+<li><strong>Načti službu a ověř odmítnutí.</strong> Spusť <code>sudo systemctl reload ssh</code>, na některých distribucích se služba jmenuje <code>sshd</code>. Pak v nové relaci zkus <code>ssh -o PubkeyAuthentication=no eva@server</code>. Má skončit <code>Permission denied</code>. Přihlášení klíčem samo nic nedokazuje, to by prošlo i se zapnutými hesly. Pak ještě ověř, že klíč pořád funguje, a teprve potom zavři starou relaci.</li>
+<li><strong>Vrať se do hry.</strong> Pokračuj v Banditu dál, jak ti to půjde. Další úrovně procvičují hledání souborů a práci s textem.</li>
+</ol>
+<script type="application/json" class="quiz-data">
+[
+ {"id": "sec-l1-q-klic", "q": "Co po <code>ssh-copy-id</code> leží na serveru?", "a": ["tvůj veřejný klíč", "tvůj soukromý klíč", "kopie otisku serveru"], "why": "Server dostane jen veřejnou část. Soukromý klíč stroj klienta neopouští."},
+ {"id": "sec-l1-q-relace", "q": "Proč při vypínání přihlášení heslem necháváš starou relaci?", "a": ["abych se mohl vrátit při chybě", "aby se načetla nová konfigurace", "aby nová relace běžela rychleji"], "why": "Otevřená relace ti zůstane, i když si chybou zamkneš nová přihlášení."}
+]
+</script>
+
+<div class="aside">
+<p><strong>Do labu:</strong> v novém prázdném adresáři na vlastním stroji si vytvoř soubory <code>-x</code>, <code>a b</code> a <code>.skryty</code> a zkus každý vypsat i smazat.</p>
+<p><strong>Hlavní zdroj:</strong> <a href="https://overthewire.org/wargames/bandit/">OverTheWire: Bandit</a>. Na uvozovky a dělení slov je nejlepší <a href="https://www.gnu.org/software/bash/manual/bash.html#Quoting">manuál Bashe</a>.</p>
+<p><strong>Něco nejasné?</strong> Zeptej se svého učitele, klidně i na drobnost.</p>
+</div>
+
+<footer>Reference: <a href="../reference/shell-ssh.html">Shell a SSH: tahák</a></footer>
+</main>
+<script src="../assets/zivost-config.js"></script>
+<script src="../../../assets/zivost.js"></script>
+<script src="../../../assets/quiz.js"></script>
+<script src="../../../assets/reveal.js"></script>
+</body>
+</html>

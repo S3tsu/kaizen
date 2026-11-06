@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shell a SSH: tahák</title>
+<link rel="stylesheet" href="../../../assets/base.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+<p class="kicker">Security · reference</p>
+<h1>Shell a SSH: tahák</h1>
+<p class="lead">Stručný přehled k lekci <a href="../lessons/0001-bandit-ssh-shell.html">1 · Bandit</a>.</p>
+
+<h2>SSH</h2>
+<div class="table-wrap"><table>
+<tr><th>Příkaz nebo soubor</th><th>Význam</th></tr>
+<tr><td><code>ssh -p 2222 eva@server</code></td><td>Připojení na jiný než výchozí port 22</td></tr>
+<tr><td><code>exit</code></td><td>Konec relace</td></tr>
+<tr><td><code>~/.ssh/known_hosts</code></td><td>Klíče serverů, ke kterým ses už připojil</td></tr>
+<tr><td>Změněný klíč serveru</td><td>Třeba reinstalace, ale i útok. Zjisti důvod jinou cestou a až potom se připoj.</td></tr>
+</table></div>
+
+<h2>SSH klíče a otisky</h2>
+<div class="table-wrap"><table>
+<tr><th>Příkaz</th><th>Význam</th></tr>
+<tr><td><code>ssh-keygen -t ed25519</code></td><td>Nový pár klíčů</td></tr>
+<tr><td><code>ssh-copy-id eva@server</code></td><td>Přenese veřejný klíč na server</td></tr>
+<tr><td><code>ssh-keygen -lf soubor.pub</code></td><td>Otisk klíče</td></tr>
+<tr><td><code>ssh-keygen -R server</code></td><td>Smaže server ze známých hostitelů. S portem: <code>-R '[server]:2222'</code></td></tr>
+<tr><td><code>ssh -o PubkeyAuthentication=no eva@server</code></td><td>Zkouška, že server heslo odmítne</td></tr>
+<tr><td><code>sudo sshd -t</code> / <code>sudo sshd -T</code></td><td>Kontrola konfigurace / výsledné hodnoty z disku</td></tr>
+</table></div>
+
+<h2>Názvy souborů</h2>
+<div class="table-wrap"><table>
+<tr><th>Název</th><th>Zápis</th><th>Proč</th></tr>
+<tr><td><code>.env</code></td><td><code>ls -a</code></td><td>Tečka skrývá z výpisu, nechrání</td></tr>
+<tr><td><code>-x</code></td><td><code>cat ./-x</code>, <code>cat -- -x</code></td><td>Jinak jde o přepínač</td></tr>
+<tr><td><code>-</code></td><td><code>cat ./-</code></td><td>Samotná pomlčka je u <code>cat</code> standardní vstup, <code>--</code> nepomůže</td></tr>
+<tr><td><code>a b</code></td><td><code>cat "a b"</code>, <code>cat a\ b</code></td><td>Jinak dvě slova</td></tr>
+</table></div>
+
+<h2>Průzkum</h2>
+<div class="table-wrap"><table>
+<tr><th>Příkaz</th><th>Význam</th></tr>
+<tr><td><code>ls -la</code></td><td>Vše včetně skrytých, s oprávněními a velikostí</td></tr>
+<tr><td><code>file data</code></td><td>Typ podle obsahu, ne podle přípony</td></tr>
+</table></div>
+
+<h2>Ve skriptech</h2>
+<pre><code>rm -- "$f"</code></pre>
+<p>Uvozovky brání dělení na slova, <code>--</code> výkladu názvu jako přepínače. Název souboru ber jako vstup, který může ovládat někdo jiný.</p>
+
+<div class="legal"><p><strong>Kde cvičit:</strong> vlastní stroje a cíle, kde to provozovatel výslovně dovoluje. Přístup není povolení (<a href="https://www.zakonyprolidi.cz/cs/2009-40#p230">§ 230 trestního zákoníku</a>).</p></div>
+<footer>Praxe: <a href="https://overthewire.org/wargames/bandit/">OverTheWire: Bandit</a></footer>
+</main>
+</body>
+</html>
