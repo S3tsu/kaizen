@@ -1,0 +1,28 @@
+/* Angličtina: staví na sdíleném /assets/base.css, mění jen to, co je jiné. */
+:root { --accent: #2f6f8f; --accent-soft: #e6f0f5; --bad: #b5373a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --accent: #8cc6e0; --accent-soft: #1e2d35; --bad: #e88b86; }
+  :root:not([data-theme="light"]) button.primary { color: #10222c; }
+}
+.en { font-style: italic; }
+textarea {
+  font: inherit; width: 100%; min-height: 3.2em; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+}
+details { margin: 10px 0; }
+summary { cursor: pointer; color: var(--accent); }
+
+/* Vstupní test */
+.hladina, .mluveni { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
+.hladina .progress, .mluveni .progress { color: var(--muted); font-size: .85rem; }
+.hladina .prompt { font-size: 1.15rem; margin: 6px 0 10px; }
+.hladina .solution { margin: 12px 0; }
+.hladina .solution strong { font-size: 1.15rem; font-weight: normal; }
+.hladina .solution small { display: block; margin-top: 4px; font-size: .9rem; color: var(--muted); }
+.hladina .actions, .mluveni .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* Mluvení na čas */
+.mluveni .time { font-size: 3rem; line-height: 1.2; text-align: center; font-variant-numeric: tabular-nums; }
+.mluveni .prompt { text-align: center; min-height: 3.2em; }
+.mluveni .actions { justify-content: center; }
+@media print { .hladina, .mluveni { display: none; } }
