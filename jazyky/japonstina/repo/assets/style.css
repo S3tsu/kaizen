@@ -1,10 +1,10 @@
 /* Japonština: staví na sdíleném /assets/base.css, tady je jen to, co je specifické. */
 :root {
-  --accent: #b5373a; --accent-soft: #f6e7e5; --bad: #b5373a;
+  --accent: #d4213d; --accent-soft: #fdecef; --bad: #d4213d; /* červená linka J */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --accent: #e88b86; --accent-soft: #3a2422; --bad: #e88b86;
+    --accent: #ff5c72; --on-accent: #10141c; --accent-soft: #33202a; --bad: #ff5c72;
   }
 }
 
@@ -12,12 +12,12 @@
 .kana { font-size: 1.4em; }
 
 .pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
-.pair { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--card); }
+.pair { border-radius: 12px; padding: 8px 10px; background: var(--card); }
 .pair .kana { font-size: 1.8rem; }
 .pair small { display: block; color: var(--muted); }
 
 /* Kana dril */
-.drill { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
+.drill { border-radius: 14px; padding: 18px; background: var(--card); margin: 16px 0; }
 .drill .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .drill .card { font-size: 4.5rem; text-align: center; line-height: 1.3; min-height: 1.3em; }
 .drill .answer { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
@@ -27,7 +27,7 @@
 
 /* Reference: tabulka kany */
 .kana-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 10px 0 24px; }
-.kana-grid div { border: 1px solid var(--line); border-radius: 6px; text-align: center; padding: 4px 0; background: var(--card); }
+.kana-grid div { border-radius: 10px; text-align: center; padding: 4px 0; background: var(--card); }
 .kana-grid .kana { display: block; font-size: 1.6rem; line-height: 1.2; }
 .kana-grid small { color: var(--muted); font-size: .8rem; }
 .kana-grid .blank { border: none; background: none; }
@@ -36,14 +36,14 @@
 .kana-grid.duo .kana { font-size: 1.4rem; }
 .kana-grid.duo .kata { margin-left: .35em; color: var(--accent); }
 
-.rychlovka { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
+.rychlovka { border-radius: 14px; padding: 18px; background: var(--card); margin: 16px 0; }
 .rychlovka .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .rychlovka .rv-head { display: flex; justify-content: space-between; color: var(--muted); font-size: .9rem; min-height: 1.4em; }
 .rychlovka .card { font-size: 4.5rem; text-align: center; line-height: 1.3; min-height: 1.3em; }
 .rychlovka .rv-opts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .rychlovka .rv-opts small { color: var(--muted); margin-right: 4px; }
-.rychlovka .rv-opts .right { border-color: var(--ok); color: var(--ok); }
-.rychlovka .rv-opts .wrong { border-color: var(--bad); color: var(--bad); }
+.rychlovka .rv-opts .right { background: var(--ok); border-color: var(--ok); color: var(--bg); opacity: 1; }
+.rychlovka .rv-opts .wrong { border-color: var(--bad); color: var(--bad); opacity: 1; }
 .rychlovka .feedback { text-align: center; margin-top: 8px; min-height: 1.6em; }
 
 @media print { .drill, .rychlovka { display: none !important; } }

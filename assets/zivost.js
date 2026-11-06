@@ -8,6 +8,11 @@
 //   reward  odměna za splněný denní cíl
 (function () {
   const CFG = window.ZIVOST_CONFIG || {};
+  // Kořen webu odvodíme z umístění tohoto souboru (assets/zivost.js), funguje na Pages i lokálně.
+  const ROOT = (function () {
+    const s = document.currentScript && document.currentScript.src;
+    return s ? new URL("../", s).href : "";
+  })();
   const KEY = CFG.key || "kaizen-zivost";
   const GOALS = [0, 10, 20, 30, 50];
 
@@ -101,7 +106,7 @@
   function renderBar() {
     if (!bar) return;
     const n = P.days[today()] || 0, g = P.goal, st = streak();
-    bar.innerHTML =
+    bar.innerHTML = (ROOT ? '<a class="zv-home" href="' + ROOT + 'index.html" title="Zpět na mapu linek">Kaizen</a>' : "") +
       '<span class="zv-st" title="Dny v řadě se splněným cílem">' + (st ? "🔥 " + st + " " + dayWord(st) : "Série začíná dnes") + "</span>" +
       (g ? '<span class="zv-goal"><span class="zv-bar"><i style="width:' + Math.min(100, n / g * 100) + '%"></i></span>Dnes ' + n + " / " + g + "</span>"
          : '<span class="zv-goal">Dnes ' + n + " " + plural(n, "odpověď", "odpovědi", "odpovědí") + "</span>") +
@@ -178,6 +183,27 @@
 
     document.querySelectorAll(".zv-fact").forEach(factBox);
     document.querySelectorAll(".zv-goals").forEach(goalPicker);
+    markPassed();
+  }
+
+  // Mapa linek na úvodní stránce vybarví lekce, které jsi prošel až na konec (patička se ukázala).
+  // Ukládá se zvlášť pod jedním klíčem pro celý web: {"jazyky/japonstina/lessons/0001-….html": "2026-11-06"}.
+  const PASSED_KEY = "kaizen-trasa-prosle";
+  function markPassed() {
+    const foot = document.querySelector("footer");
+    if (!ROOT || !foot || !("IntersectionObserver" in window)) return;
+    const path = location.href.split(/[?#]/)[0];
+    if (path.indexOf(ROOT) !== 0 || !/\/lessons\/[^/]+\.html$/.test(path)) return;
+    const rel = decodeURIComponent(path.slice(ROOT.length));
+    const io = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (e) { return e.isIntersecting; }) || window.scrollY < 300) return;
+      io.disconnect();
+      try {
+        const done = JSON.parse(localStorage.getItem(PASSED_KEY)) || {};
+        if (!done[rel]) { done[rel] = today(); localStorage.setItem(PASSED_KEY, JSON.stringify(done)); }
+      } catch (e) { /* bez úložiště nevadí */ }
+    });
+    io.observe(foot);
   }
 
   window.Zivost = { answer: answer, tanu: mascot, say: say, best: P.best, save: save };
