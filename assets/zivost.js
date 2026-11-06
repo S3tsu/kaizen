@@ -1,7 +1,14 @@
-// Živost: maskot Tanu (tanuki), denní cíl, série dní, jeny za cíl a zajímavosti o Japonsku.
+// Živost: maskot, denní cíl, série dní, odměna za cíl a zajímavosti.
 // Drily, kvízy a karty volají Zivost.answer(ok). Vše se ukládá jen v prohlížeči (localStorage).
+// Téma si před načtením tohoto souboru nastaví window.ZIVOST_CONFIG:
+//   key     vlastní klíč v localStorage (web má jeden origin, témata se nesmí přepisovat)
+//   facts   [[nadpis, text], ...]
+//   text    přepis hlášek z TEXT níže, včetně odměny (coin, coinTitle)
+//   mascot  function (w, pose, label) vracející SVG; výchozí je Tanu
+//   reward  odměna za splněný denní cíl
 (function () {
-  const KEY = "kaizen-ja-zivost";
+  const CFG = window.ZIVOST_CONFIG || {};
+  const KEY = CFG.key || "kaizen-zivost";
   const GOALS = [0, 10, 20, 30, 50];
 
   function load() {
@@ -72,21 +79,21 @@
       eyes + mouth + paws + extra + "</svg>";
   }
 
-  /* ---------- Zajímavosti ---------- */
-  const FACTS = [
-    ["Tři písma najednou", "V běžném japonském textu se míchá hiragana, katakana a kanji, občas i latinka (rōmaji)."],
-    ["Kana z čínských znaků", "Hiragana i katakana vznikly zjednodušením čínských znaků, které se používaly jen kvůli zvuku."],
-    ["Káva po holandsku", "コーヒー (kōhī, káva) se do japonštiny dostala z nizozemštiny, z koffie."],
-    ["Chleba po portugalsku", "パン (pan, chléb) je z portugalského pão. Portugalci byli v 16. století mezi prvními Evropany v Japonsku."],
-    ["Brigáda po německu", "アルバイト (arubaito) znamená brigáda a pochází z německého Arbeit. Často se zkracuje na バイト."],
-    ["Prázdný orchestr", "カラオケ (karaoke) = から (prázdný) + zkrácené オーケストラ (orchestr). Hudba bez zpěvu."],
-    ["Most, nebo hůlky?", "はし může být most (橋) i hůlky (箸). V řeči je liší výška tónu, v písmu znak kanji."],
-    ["Tanuki", "Tanuki (psík mývalovitý) je v japonských pověstech šibal, který mění podobu. K proměně si prý klade na hlavu lístek."],
-    ["Manga zprava doleva", "Manga se čte zprava doleva a text v bublinách se píše svisle shora dolů, stejně jako tradiční japonský text."],
-    ["Furigana", "Malé čtení nad kanji se jmenuje furigana. V manze pro mladší čtenáře bývá u všech kanji, takže stačí znát kanu."],
-    ["Tři struny", "Šamisen (三味線) je tradiční loutna se třemi strunami. Zazní v kabuki i v lidových písních."],
-    ["Enka", "Enka (演歌) je žánr sentimentálních balad, typický zdobným, chvějivým přednesem zvaným kobuši (こぶし). Je oblíbený hlavně u starší generace."]
-  ];
+  /* ---------- Zajímavosti a hlášky ---------- */
+  const FACTS = CFG.facts || [];
+  const REWARD = CFG.reward || 100;
+  const TEXT = Object.assign({
+    five: "Pět správně v řadě!",
+    ten: "Deset v řadě! Tanu tancuje.",
+    tens: " v řadě. To už je řemeslo.",
+    broken: "Série přerušená, ale nevadí. Chyba je místo, kde se učíš.",
+    goalDone: "Denní cíl splněný! Tanu ti přidává " + REWARD + " bodů.",
+    coin: "★",
+    coinTitle: "Body za splněné denní cíle",
+    factKicker: "Tanu ti vzkazuje",
+    askFact: "Tanu: řekni mi zajímavost"
+  }, CFG.text);
+  const mascot = CFG.mascot || tanu;
 
   /* ---------- UI ---------- */
   let bar, buddy, bubble, row = 0, timer;
@@ -98,18 +105,18 @@
       '<span class="zv-st" title="Dny v řadě se splněným cílem">' + (st ? "🔥 " + st + " " + dayWord(st) : "Série začíná dnes") + "</span>" +
       (g ? '<span class="zv-goal"><span class="zv-bar"><i style="width:' + Math.min(100, n / g * 100) + '%"></i></span>Dnes ' + n + " / " + g + "</span>"
          : '<span class="zv-goal">Dnes ' + n + " " + plural(n, "odpověď", "odpovědi", "odpovědí") + "</span>") +
-      '<span class="zv-yen" title="Jeny za splněné denní cíle">¥ ' + P.yen + "</span>";
+      '<span class="zv-yen" title="' + TEXT.coinTitle + '">' + TEXT.coin + " " + P.yen + "</span>";
   }
 
   function say(text, pose, ms) {
     if (!buddy) return;
-    buddy.querySelector(".zv-pic").innerHTML = tanu(76, pose);
+    buddy.querySelector(".zv-pic").innerHTML = mascot(76, pose);
     bubble.innerHTML = text;
     buddy.classList.add("open");
     clearTimeout(timer);
     timer = setTimeout(function () {
       buddy.classList.remove("open");
-      buddy.querySelector(".zv-pic").innerHTML = tanu(76, "idle");
+      buddy.querySelector(".zv-pic").innerHTML = mascot(76, "idle");
     }, ms || 3500);
   }
 
@@ -118,16 +125,16 @@
     P.days[t] = before + 1;
     if (ok) {
       row++;
-      if (row === 5) say("Pět správně v řadě! すごい!", "hura");
-      else if (row === 10) say("Deset v řadě! Tanu tancuje.", "hura");
-      else if (row % 10 === 0) say(row + " v řadě. To už je řemeslo.", "hura");
+      if (row === 5) say(TEXT.five, "hura");
+      else if (row === 10) say(TEXT.ten, "hura");
+      else if (row % 10 === 0) say(row + TEXT.tens, "hura");
     } else {
-      if (row >= 5) say("Série přerušená, ale nevadí. Chyba je místo, kde se učíš.", "oops");
+      if (row >= 5) say(TEXT.broken, "oops");
       row = 0;
     }
     if (P.goal && before < P.goal && before + 1 >= P.goal && !P.gdone[t]) {
-      P.gdone[t] = 1; P.yen += 100;
-      setTimeout(function () { say("Denní cíl splněný! Tanu ti hází do kasičky 100 ¥.", "hura", 5000); }, 300);
+      P.gdone[t] = 1; P.yen += REWARD;
+      setTimeout(function () { say(TEXT.goalDone, "hura", 5000); }, 300);
     }
     save(); renderBar();
   }
@@ -144,7 +151,8 @@
 
   function factBox(el) {
     const f = FACTS[Math.floor(Math.random() * FACTS.length)];
-    el.innerHTML = '<div class="zv-fact-pic">' + tanu(96, "mysli") + '</div><div><span class="kicker">Tanu ti vzkazuje</span>' +
+    if (!f) { el.hidden = true; return; }
+    el.innerHTML = '<div class="zv-fact-pic">' + mascot(96, "mysli") + '</div><div><span class="kicker">' + TEXT.factKicker + "</span>" +
       "<h3>" + f[0] + "</h3><p>" + f[1] + "</p></div>";
   }
 
@@ -158,12 +166,13 @@
 
     buddy = document.createElement("div");
     buddy.className = "zv-buddy";
-    buddy.innerHTML = '<div class="zv-bubble" role="status" aria-live="polite"></div><button type="button" class="zv-pic" aria-label="Tanu: řekni mi zajímavost"></button>';
+    buddy.innerHTML = '<div class="zv-bubble" role="status" aria-live="polite"></div><button type="button" class="zv-pic" aria-label="' + TEXT.askFact + '"></button>';
     document.body.appendChild(buddy);
     bubble = buddy.querySelector(".zv-bubble");
-    buddy.querySelector(".zv-pic").innerHTML = tanu(76, "idle");
+    buddy.querySelector(".zv-pic").innerHTML = mascot(76, "idle");
     buddy.querySelector(".zv-pic").onclick = function () {
       const f = FACTS[Math.floor(Math.random() * FACTS.length)];
+      if (!f) return;
       say("<strong>" + f[0] + ".</strong> " + f[1], "mysli", 7000);
     };
 
@@ -171,6 +180,6 @@
     document.querySelectorAll(".zv-goals").forEach(goalPicker);
   }
 
-  window.Zivost = { answer: answer, tanu: tanu, say: say, best: P.best, save: save };
+  window.Zivost = { answer: answer, tanu: mascot, say: say, best: P.best, save: save };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

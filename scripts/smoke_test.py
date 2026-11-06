@@ -3,7 +3,7 @@
 
 Ověří, že existuje index a verze, že každá HTML stránka jde přečíst
 a má <title>, a že všechny relativní odkazy (href/src) vedou na
-existující soubory, a že stránky neobsahují osobní údaje. Při chybě skončí s nenulovým kódem.
+existující soubory, a že stránky, skripty ani data neobsahují osobní údaje. Při chybě skončí s nenulovým kódem.
 """
 import re
 import sys
@@ -35,8 +35,6 @@ def main():
             continue
         if not re.search(r"<title>.+?</title>", text, re.S | re.I):
             errors.append(f"{rel}: chybí <title>")
-        for leak in PRIVATE.findall(text):
-            errors.append(f"{rel}: možný osobní údaj „{leak}“")
         for target in LINK.findall(text):
             url = urlparse(target)
             if url.scheme or url.netloc or target.startswith(("#", "mailto:", "data:")):
@@ -49,6 +47,16 @@ def main():
                 dest = dest / "index.html"
             if not dest.exists():
                 errors.append(f"{rel}: rozbitý odkaz {target}")
+
+    for path in sorted(p for ext in ("*.html", "*.js", "*.json") for p in SITE.rglob(ext)):
+        rel = path.relative_to(SITE)
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as e:
+            errors.append(f"{rel}: nejde přečíst ({e})")
+            continue
+        for leak in PRIVATE.findall(text):
+            errors.append(f"{rel}: možný osobní údaj „{leak}“")
 
     if errors:
         print("Smoke test SELHAL:")

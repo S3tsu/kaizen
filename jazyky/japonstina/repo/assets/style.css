@@ -1,54 +1,20 @@
-/* Společný styl lekcí a referencí japonštiny. */
+/* Japonština: staví na sdíleném /assets/base.css, tady je jen to, co je specifické. */
 :root {
-  --bg: #fbfaf7; --fg: #1d1d1b; --muted: #6b6a65; --line: #e4e1da;
-  --accent: #b5373a; --accent-soft: #f6e7e5; --ok: #2f7a4a; --bad: #b5373a;
-  --card: #ffffff;
+  --accent: #b5373a; --accent-soft: #f6e7e5; --bad: #b5373a;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #161614; --fg: #ecebe6; --muted: #9a9892; --line: #2e2d2a;
-    --accent: #e88b86; --accent-soft: #3a2422; --ok: #7fcf9b; --bad: #e88b86;
-    --card: #1f1f1c;
+    --accent: #e88b86; --accent-soft: #3a2422; --bad: #e88b86;
   }
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--fg);
-  font: 18px/1.6 Georgia, "Iowan Old Style", serif;
-}
-main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
-h1 { font-weight: normal; font-size: 2rem; line-height: 1.2; margin: 0 0 4px; }
-h2 { font-weight: normal; font-size: 1.35rem; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-top: 40px; }
-.kicker { color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; }
-.lead { font-size: 1.1rem; color: var(--muted); }
-a { color: var(--accent); }
+
 .jp, .kana { font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif; }
 .kana { font-size: 1.4em; }
-.aside {
-  border-left: 3px solid var(--accent); background: var(--accent-soft);
-  padding: 10px 14px; margin: 20px 0; border-radius: 0 6px 6px 0; font-size: .95rem;
-}
-.aside p { margin: 4px 0; }
-table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
-th { color: var(--muted); font-weight: normal; font-size: .85rem; }
+
 .pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
 .pair { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--card); }
 .pair .kana { font-size: 1.8rem; }
 .pair small { display: block; color: var(--muted); }
-ol.steps li { margin-bottom: 6px; }
-footer { margin-top: 48px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 12px; }
-button {
-  font: inherit; font-size: .95rem; padding: 8px 14px; border-radius: 6px;
-  border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer;
-}
-button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-button:disabled { opacity: .5; cursor: default; }
-input[type="text"] {
-  font: inherit; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line);
-  background: var(--card); color: var(--fg); width: 10em;
-}
-.ok { color: var(--ok); } .bad { color: var(--bad); } .muted { color: var(--muted); }
 
 /* Kana dril */
 .drill { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
@@ -59,15 +25,6 @@ input[type="text"] {
 .drill .progress { text-align: center; color: var(--muted); font-size: .85rem; }
 .drill .misses .kana { margin-right: .4em; }
 
-/* Kvíz */
-.quiz-q { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--card); margin: 14px 0; }
-.quiz-q p { margin: 0 0 8px; }
-.quiz-q .opts { display: grid; gap: 6px; }
-.quiz-q button { text-align: left; }
-.quiz-q button.right { border-color: var(--ok); color: var(--ok); }
-.quiz-q button.wrong { border-color: var(--bad); color: var(--bad); }
-.quiz-q .why { margin-top: 8px; font-size: .92rem; color: var(--muted); }
-
 /* Reference: tabulka kany */
 .kana-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 10px 0 24px; }
 .kana-grid div { border: 1px solid var(--line); border-radius: 6px; text-align: center; padding: 4px 0; background: var(--card); }
@@ -75,74 +32,9 @@ input[type="text"] {
 .kana-grid small { color: var(--muted); font-size: .8rem; }
 .kana-grid .blank { border: none; background: none; }
 
-@media print {
-  body { background: #fff; color: #000; font-size: 12pt; }
-  .drill, .quiz, button { display: none; }
-  a { color: #000; }
-}
-
 /* Tabulka hiragana + katakana v jednom políčku */
 .kana-grid.duo .kana { font-size: 1.4rem; }
 .kana-grid.duo .kata { margin-left: .35em; color: var(--accent); }
-
-/* Vybavovací karty */
-.reveal { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
-.reveal .progress { color: var(--muted); font-size: .85rem; }
-.reveal .prompt { font-size: 1.2rem; margin: 6px 0 12px; }
-.reveal .solution { font-size: 1.35rem; margin-bottom: 12px; }
-.reveal .solution small { display: block; font-size: .9rem; margin-top: 4px; }
-.reveal .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-/* Dialog a slovíčka */
-.dialog { margin: 12px 0; }
-.dialog p { margin: 4px 0; }
-.dialog .who { color: var(--muted); display: inline-block; min-width: 4.5em; }
-.dialog .cz { font-family: Georgia, "Iowan Old Style", serif; display: block; color: var(--muted); font-size: .9rem; margin-left: 4.5em; }
-.pattern { font-size: 1.3rem; text-align: center; padding: 10px; border: 1px dashed var(--line); border-radius: 8px; margin: 12px 0; }
-@media print { .reveal { display: none; } }
-
-/* Živost: Tanu, denní cíl, série, Rychlovka */
-:root { --tn-fur: #b98a5c; --tn-dark: #4a3527; --tn-light: #f3e3cc; --tn-ink: #2a1d14; --tn-leaf: #5f9e4f; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --tn-fur: #a7794d; --tn-light: #e9d6bb; --tn-ink: #1a120c; }
-}
-.tanu .tn-fur { fill: var(--tn-fur); stroke: var(--tn-ink); stroke-width: 3; }
-.tanu .tn-tail { fill: var(--tn-dark); stroke: var(--tn-ink); stroke-width: 3; }
-.tanu .tn-belly { fill: var(--tn-light); }
-.tanu .tl { fill: none; stroke: var(--tn-ink); stroke-linecap: round; stroke-linejoin: round; }
-@media (prefers-reduced-motion: no-preference) {
-  .tanu .tn-blink { animation: tn-blink 5s infinite; transform-origin: 100px 84px; }
-  .tanu .tn-cheer { animation: tn-bob .5s ease-in-out infinite alternate; }
-  .tanu .tn-spark { animation: tn-pop .8s ease-in-out infinite alternate; transform-origin: 100px 60px; }
-  .tanu .tn-leafg { animation: tn-sway 3s ease-in-out infinite alternate; transform-origin: 100px 40px; }
-  .zv-buddy.open .zv-pic { animation: tn-hop .4s ease-out; }
-}
-@keyframes tn-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
-@keyframes tn-bob { to { transform: translateY(-6px); } }
-@keyframes tn-pop { from { opacity: .4; transform: scale(.9); } to { opacity: 1; transform: scale(1.05); } }
-@keyframes tn-sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
-@keyframes tn-hop { 40% { transform: translateY(-10px); } }
-
-.zv-bar-top { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; font-size: .85rem; color: var(--muted);
-  border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; margin-bottom: 20px; background: var(--card); }
-.zv-goal { display: inline-flex; align-items: center; gap: 8px; }
-.zv-bar { width: 90px; height: 7px; border-radius: 4px; background: var(--line); overflow: hidden; display: inline-block; }
-.zv-bar i { display: block; height: 100%; background: var(--accent); }
-.zv-yen { margin-left: auto; font-weight: bold; color: var(--fg); }
-
-.zv-buddy { position: fixed; right: 12px; bottom: 12px; z-index: 10; display: flex; align-items: flex-end; gap: 6px; pointer-events: none; }
-.zv-buddy .zv-pic { pointer-events: auto; background: none; border: 0; padding: 0; cursor: pointer; }
-.zv-bubble { max-width: min(260px, 60vw); background: var(--card); border: 1px solid var(--line); border-radius: 12px 12px 2px 12px;
-  padding: 8px 12px; font-size: .9rem; box-shadow: 0 4px 16px rgba(0,0,0,.12); opacity: 0; transform: translateY(6px);
-  transition: opacity .2s, transform .2s; }
-.zv-buddy.open .zv-bubble { opacity: 1; transform: none; }
-
-.zv-fact { display: flex; gap: 14px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: var(--card); margin: 16px 0; }
-.zv-fact h3 { margin: 2px 0 4px; font-size: 1.05rem; }
-.zv-fact p { margin: 0; font-size: .95rem; }
-.zv-fact-pic { flex: none; }
-.zv-goals { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0 16px; font-size: .9rem; }
-.zv-goals button { padding: 4px 10px; }
 
 .rychlovka { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--card); margin: 16px 0; }
 .rychlovka .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
@@ -153,4 +45,5 @@ input[type="text"] {
 .rychlovka .rv-opts .right { border-color: var(--ok); color: var(--ok); }
 .rychlovka .rv-opts .wrong { border-color: var(--bad); color: var(--bad); }
 .rychlovka .feedback { text-align: center; margin-top: 8px; min-height: 1.6em; }
-@media print { .zv-buddy, .zv-bar-top, .zv-fact, .zv-goals, .rychlovka { display: none !important; } }
+
+@media print { .drill, .rychlovka { display: none !important; } }

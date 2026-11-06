@@ -2,8 +2,8 @@
 """Sestaví web pro GitHub Pages do _site/.
 
 Bere jen veřejné výstupy z /teach workspaců (<oblast>/<tema>/repo/):
-lessons/, reference/, assets/. Vygeneruje rozcestník index.html
-a do patičky vloží verzi ze souboru VERSION.
+lessons/, reference/, assets/. Přidá sdílené komponenty z assets/ v kořeni,
+vygeneruje rozcestník index.html a do patičky vloží verzi ze souboru VERSION.
 """
 import html
 import re
@@ -105,6 +105,7 @@ def main():
     if SITE.exists():
         shutil.rmtree(SITE)
     SITE.mkdir()
+    shutil.copytree(ROOT / "assets", SITE / "assets")
     for area_dir, topics in areas:
         for topic_dir, workspace, _ in topics:
             for d in PUBLIC_DIRS:
