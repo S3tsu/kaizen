@@ -1,9 +1,8 @@
 /* Security: staví na sdíleném /assets/base.css, tady je jen to, co je specifické. */
 
-:root { --accent: #1f6f6b; --accent-soft: #e3f1ef; --code-bg: #f1efe9; }
+:root { --accent: #e0a000; --on-accent: #151922; --link: #8a5d00; --accent-soft: #fdf3dc; --code-bg: #f3f1ec; } /* jantarová linka S; světlá, proto tmavý text na ní a tmavší odkazy */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --accent: #6fcfc4; --accent-soft: #1b2f2d; --code-bg: #262622; }
-  :root:not([data-theme="light"]) button.primary { color: #10201f; }
+  :root:not([data-theme="light"]) { --accent: #ffc13d; --on-accent: #151922; --link: #ffc13d; --accent-soft: #2e2614; --code-bg: #1d2330; }
 }
 
 code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88em; }
@@ -12,7 +11,7 @@ pre { background: var(--code-bg); padding: 12px 14px; border-radius: 8px; overfl
 pre code { background: none; padding: 0; overflow-wrap: normal; }
 
 /* Upozornění u praktických cvičení: kde se smí zkoušet. */
-.legal { border: 1px solid var(--accent); border-radius: 8px; padding: 10px 14px; margin: 20px 0; font-size: .95rem; }
+.legal { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 14px; margin: 20px 0; font-size: .95rem; }
 .legal p { margin: 4px 0; }
 
 /* Na úzkém displeji se řádky tabulek skládají pod sebe, aby se nic neořízlo. */
@@ -24,7 +23,7 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
 }
 
 /* Pasti v názvech souborů */
-.trap { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 10px 0; background: var(--card); }
+.trap { border-radius: 12px; padding: 10px 14px; margin: 10px 0; background: var(--card); }
 .trap h3 { margin: 0 0 4px; font-size: 1rem; font-weight: normal; }
 .trap p { margin: 4px 0; font-size: .95rem; }
 
@@ -38,6 +37,6 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
 .bit .bt-l { fill: none; stroke: var(--bt-ink); stroke-linecap: round; stroke-linejoin: round; }
 
 /* Nápovědy po krocích: rozbalí se až na vyžádání. */
-details { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 8px 0; background: var(--card); }
+details { border-radius: 12px; padding: 8px 12px; margin: 8px 0; background: var(--card); }
 details summary { cursor: pointer; }
 details p { margin: 8px 0 2px; }

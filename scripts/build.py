@@ -51,7 +51,10 @@ LINES = {
     "japonstina": ("J", "#d4213d", "#ff5c72"),
     "anglictina": ("A", "#1c64d6", "#5a9bff"),
     "networking": ("N", "#0b7d49", "#3fcf8a"),
-    "security": ("S", "#c98a00", "#ffc13d"),
+    "security": ("S", "#e0a000", "#ffc13d"),
+}
+# Linky tak světlé, že na nich bílé písmeno nejde přečíst, dostanou tmavé.
+DARK_LETTER = {"security"
 }
 
 
@@ -75,6 +78,7 @@ def render_index(version: str, areas) -> str:
             rel = f"{area_dir.name}/{topic_dir.name}"
             name = TOPICS.get(topic_dir.name, topic_dir.name)
             letter, light, dark = LINES.get(topic_dir.name, (name[:1], "#6b7383", "#9aa3b5"))
+            on = "#151922" if topic_dir.name in DARK_LETTER else "#ffffff"
             key = zivost_key(workspace)
             stations = "".join(
                 f'<li class="st" data-path="{rel}/lessons/{p.name}"><a href="{rel}/lessons/{p.name}">{html.escape(title_of(p))}</a></li>'
@@ -91,7 +95,7 @@ def render_index(version: str, areas) -> str:
                 ) + "</p>"
             today = f'<span class="today" data-key="{html.escape(key)}"></span>' if key else ""
             lines.append(
-                f'<section class="line{"" if pages["lessons"] else " planned"}" style="--c-l:{light};--c-d:{dark}">'
+                f'<section class="line{"" if pages["lessons"] else " planned"}" style="--c-l:{light};--c-d:{dark};--on-l:{on}">'
                 f'<h2><b aria-hidden="true">{html.escape(letter)}</b>{html.escape(name)}'
                 f'<small>{AREAS[area_dir.name]}</small>{today}</h2>'
                 f'<ol class="track">{stations}</ol>{refs}</section>'
@@ -108,11 +112,11 @@ main.map::before {{ display:none; }}
 main.map {{ padding-left:20px; }}
 .map header h1 {{ font-size:4.2rem; line-height:1; margin:8px 0 12px; }}
 .map header p {{ font-size:1.15rem; margin:0 0 40px; max-width:30em; }}
-.line {{ --c:var(--c-l); margin:0 0 34px; }}
-@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) .line {{ --c:var(--c-d); }} }}
+.line {{ --c:var(--c-l); --on:var(--on-l); margin:0 0 34px; }}
+@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) .line {{ --c:var(--c-d); --on:#10141c; }} }}
 .line h2 {{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; margin:0 0 8px; font-size:1.35rem; }}
 .line h2::before {{ display:none; }}
-.line h2 b {{ display:inline-grid; place-items:center; width:36px; height:36px; border-radius:50%; background:var(--c); color:var(--bg); font-size:1.05rem; }}
+.line h2 b {{ display:inline-grid; place-items:center; width:36px; height:36px; border-radius:50%; background:var(--c); color:var(--on); font-size:1.05rem; }}
 .line h2 small {{ font-weight:600; font-size:.85rem; color:var(--muted); }}
 .today {{ margin-left:auto; font-size:.85rem; font-weight:700; }}
 .today:empty {{ display:none; }}
